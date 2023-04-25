@@ -1,10 +1,12 @@
 package collection;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ComparableVsComparatorTest {
 
@@ -17,10 +19,13 @@ public class ComparableVsComparatorTest {
         listOfEmployees.add(new Employee(30, "Amit", "MANAGER"));
         listOfEmployees.add(new Employee(20, "Rahul", "HR"));
 
-        System.out.println(listOfEmployees);
+        List<Integer> expectedEmpIdList = List.of(10,20,30,50,80);
+
+        List<Integer> empIdList = listOfEmployees.stream().map(Employee::getEmpId).collect(Collectors.toList());
         Collections.sort(listOfEmployees);
-        System.out.println(listOfEmployees);
-        System.out.println("==== Comparable Testing Completed ==========");
+        List<Integer> empIdListAfterSort = listOfEmployees.stream().map(Employee::getEmpId).collect(Collectors.toList());
+        Assertions.assertNotEquals(empIdList,empIdListAfterSort);
+        Assertions.assertEquals(expectedEmpIdList, empIdListAfterSort);
     }
 
     @Test
@@ -34,13 +39,34 @@ public class ComparableVsComparatorTest {
         listOfStudents.add(new Student(9, "Nishant", 16));
         listOfStudents.add(new Student(4, "Atul", 14));
 
-        System.out.println(listOfStudents);
+        List<Student> expectedListAfterNameSorting = new ArrayList<>();
+        expectedListAfterNameSorting.add(new Student(5, "Abhijit", 15));
+        expectedListAfterNameSorting.add(new Student(4, "Atul", 14));
+        expectedListAfterNameSorting.add(new Student(30, "Jagdish", 13));
+        expectedListAfterNameSorting.add(new Student(1, "Jaywant", 17));
+        expectedListAfterNameSorting.add(new Student(21, "Kiran", 14));
+        expectedListAfterNameSorting.add(new Student(9, "Nishant", 16));
+        expectedListAfterNameSorting.add(new Student(12, "Suraj", 15));
+
+        List<Student> expectedListAfterRollNoSorting = new ArrayList<>();
+        expectedListAfterRollNoSorting.add(new Student(1, "Jaywant", 17));
+        expectedListAfterRollNoSorting.add(new Student(4, "Atul", 14));
+        expectedListAfterRollNoSorting.add(new Student(5, "Abhijit", 15));
+        expectedListAfterRollNoSorting.add(new Student(9, "Nishant", 16));
+        expectedListAfterRollNoSorting.add(new Student(12, "Suraj", 15));
+        expectedListAfterRollNoSorting.add(new Student(21, "Kiran", 14));
+        expectedListAfterRollNoSorting.add(new Student(30, "Jagdish", 13));
+
+        List<Student> originalStudentList = new ArrayList<>(listOfStudents);
+
 //        Collections.sort(listOfStudents, new NameComparator());
         listOfStudents.sort(new NameComparator());
-        System.out.println(listOfStudents);
+        Assertions.assertNotEquals(originalStudentList, listOfStudents);
+        Assertions.assertEquals(expectedListAfterNameSorting, listOfStudents);
+
 //        Collections.sort(listOfStudents, new RollNoComparator());
         listOfStudents.sort(new RollNoComparator());
-        System.out.println(listOfStudents);
-        System.out.println("==== Comparator Testing Completed ==========");
+        Assertions.assertNotEquals(originalStudentList, listOfStudents);
+        Assertions.assertEquals(expectedListAfterRollNoSorting, listOfStudents);
     }
 }
